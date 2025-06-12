@@ -16,6 +16,20 @@
       --text-secondary: #aaa;
     }
 
+
+    @keyframes shimmer {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+
     * {
       margin: 0;
       padding: 0;
@@ -337,10 +351,21 @@
     .anime-row {
       display: flex;
       overflow-x: auto;
+      overflow-y: visible; /* Добавлено */
       gap: 15px;
       padding-bottom: 10px;
+      padding-top: 10px; /* Добавлено немного места сверху */
     }
 
+
+    .anime-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      border-radius: 12px;
+      transition: filter 0.4s ease;
+    }
     .anime-card {
       position: relative;
       width: 160px;
@@ -352,26 +377,26 @@
       transition: transform 0.3s ease;
     }
 
-    .anime-card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
+    .anime-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
       border-radius: 12px;
-      transition: filter 0.4s ease;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
     }
 
-    .anime-card:hover {
-      transform: translateY(-5px);
+    .anime-card:hover::before {
+      opacity: 1;
     }
 
     .card-overlay {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(10, 10, 10, 0.85);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       color: white;
       opacity: 0;
       transition: opacity 0.4s ease, transform 0.4s ease;
@@ -381,12 +406,18 @@
       transform: scale(0.8);
       pointer-events: none;
       border-radius: 12px;
+      z-index: 2;
     }
 
     .anime-card:hover .card-overlay {
       opacity: 1;
       transform: scale(1);
       pointer-events: auto;
+    }
+
+
+    .anime-card:hover {
+      transform: translateY(-5px);
     }
 
     .anime-card:hover img {
@@ -448,6 +479,50 @@
       opacity: 1;
       pointer-events: auto;
     }
+
+    .anime-card .watch-button {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 9px 30px;
+      border: none;
+      border-radius: 20px;
+      font-size: 13px;
+      color: white;
+      background: linear-gradient(45deg, #666, #999, #666);
+      background-size: 200% 200%;
+      opacity: 0;
+      pointer-events: none;
+      cursor: pointer;
+      z-index: 2;
+      transition: opacity 0.4s ease, transform 0.3s ease;
+      animation: shimmer 3s linear infinite;
+    }
+
+    .anime-card:hover .watch-button {
+      opacity: 0.5;
+      pointer-events: auto;
+    }
+
+    .anime-card .watch-button:hover {
+      opacity: 0.8;
+      transform: translateX(-50%) scale(1.05);
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+
     
   </style>
 </head>
@@ -495,6 +570,7 @@
       <span class="rating-badge">★ 8.7</span>
     </div>
   </div>
+  <button class="watch-button">Смотреть</button>
 </div>
 
     <!-- 2 -->
@@ -507,6 +583,7 @@
           <span class="rating-badge">★ 9.0</span>
         </div>
       </div>
+      <button class="watch-button">Смотреть</button>
     </div>
     <!-- 3 -->
     <div class="anime-card" data-id="death-note">
@@ -518,6 +595,7 @@
           <span class="rating-badge">★ 9.1</span>
         </div>
       </div>
+      <button class="watch-button">Смотреть</button>
     </div>
     <!-- 4 -->
     <div class="anime-card" data-id="one-punch-Man">
@@ -529,6 +607,7 @@
           <span class="rating-badge">★ 8.8</span>
         </div>
       </div>
+      <button class="watch-button">Смотреть</button>
     </div>
     <!-- 5 -->
     <div class="anime-card" data-id="stains-gate">
@@ -540,6 +619,7 @@
           <span class="rating-badge">★ 9.2</span>
         </div>
       </div>
+      <button class="watch-button">Смотреть</button>
     </div>
     <!-- 6 -->
     <div class="anime-card" data-id="fullmetal-alchemist-brotherhood">
@@ -551,6 +631,7 @@
           <span class="rating-badge">★ 9.3</span>
         </div>
       </div>
+      <button class="watch-button">Смотреть</button>
     </div>
 </section>
 
@@ -575,16 +656,19 @@
     }
   </script>
   <!--------------------------------------------------------------------------->
-  <script>
-  document.querySelectorAll('.anime-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const animeId = card.getAttribute('data-id');
+<script>
+  document.querySelectorAll('.watch-button').forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.stopPropagation(); // предотвращает всплытие событий
+      const card = button.closest('.anime-card');
+      const animeId = card?.getAttribute('data-id');
       if (animeId) {
         window.location.href = `watch.html?id=${encodeURIComponent(animeId)}`;
       }
     });
   });
 </script>
+
 
 </body>
 </html>
