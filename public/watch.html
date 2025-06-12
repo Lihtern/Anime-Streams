@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Смотреть аниме — AniméStream</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #808080;
+      --highlight: #a0a0a0;
+      --text: #fff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #111;
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding-top: 80px;
+    }
+
+    .background {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .background img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(8px) brightness(0.5);
+      opacity: 0;
+      animation: fadeSlide 60s infinite;
+    }
+
+    .background img:nth-child(1) { animation-delay: 0s; }
+    .background img:nth-child(2) { animation-delay: 6s; }
+    .background img:nth-child(3) { animation-delay: 12s; }
+    .background img:nth-child(4) { animation-delay: 18s; }
+    .background img:nth-child(5) { animation-delay: 24s; }
+
+    @keyframes fadeSlide {
+      0%, 100% { opacity: 0; }
+      10%, 20% { opacity: 1; }
+      30%, 100% { opacity: 0; }
+    }
+
+    .logo-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1002;
+      background-color: transparent;
+      border: none;
+      color: var(--accent);
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .logo-button:hover {
+      background-color: rgba(128, 128, 128, 0.1);
+    }
+
+    .logo-button::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 2px;
+      background-color: var(--accent);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-button:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .dropdown {
+      position: fixed;
+      top: 80px;
+      left: 0;
+      width: 260px;
+      height: calc(100vh - 80px);
+      background-color: #222;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 1001;
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .dropdown.show {
+      transform: translateX(0);
+    }
+
+    .dropdown button {
+      background-color: #333;
+      border: none;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 15px;
+    }
+
+    .dropdown button:hover {
+      background-color: #444;
+      transform: translateY(-2px);
+    }
+
+    .dropdown .highlight {
+      background-color: var(--highlight);
+    }
+
+    .watch-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      background: rgba(30, 30, 30, 0.85);
+      padding: 40px;
+      border-radius: 16px;
+      width: 1600px;
+      max-width: 95vw;
+      height: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+  .video-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+
+    .watch-title {
+      font-size: 26px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .watch-description {
+      text-align: center;
+      color: #bbb;
+      margin-bottom: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+@media (max-width: 1200px) {
+  .watch-container {
+    padding: 30px;
+  }
+  .watch-title {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .watch-container {
+    padding: 20px;
+    max-width: 95%;
+  }
+
+  .watch-title {
+    font-size: 18px;
+  }
+
+  .watch-description {
+    font-size: 14px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+ <div class="background">
+    <img src="https://img.freepik.com/free-photo/digital-art-with-city-landscape-architecture_23-2151065702.jpg" alt="bg1">
+    <img src="https://wallpapercat.com/w/full/d/2/d/2127410-2048x1365-desktop-hd-haunted-forest-wallpaper.jpg" alt="bg2">
+    <img src="https://i.pinimg.com/736x/d9/5a/ed/d95aed10b9e7cd5ae58e01db19883552.jpg" alt="bg3">
+    <img src="https://images.wallpapersden.com/image/download/black-and-white-snow-winter-night_bGpuZW6UmZqaraWkpJRmbmdlrWZnamg.jpg" alt="bg4">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0d-Y-FqZE9JCNI5514NFgSbOeGef85HPkX-BlPBSUxSB0C8fag_kwnJDel--iYY0Auy8" alt="bg5">
+    <img src="https://wallpaper.dog/large/17061716.jpg" alt="bg6">
+    <img src="https://wallpaper.dog/large/17061733.jpg" alt="bg7">
+    <img src="https://wallpaper.dog/large/10847083.jpg" alt="bg8">
+    <img src="https://e1.pxfuel.com/desktop-wallpaper/183/125/desktop-wallpaper-black-moon-17-mb-dark-forest-with-moon.jpg" alt="bg9">
+    <img src="https://wallpaper.dog/large/17061770.jpg" alt="bg10">
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="dropdown" id="dropdown-menu">
+    <button onclick="location.href='login.html'">🔑 Вход</button>
+    <button onclick="location.href='register.html'">📝 Регистрация</button>
+    <button onclick="location.href='subscribe.html'">⭐ Подписка</button>
+    <button onclick="location.href='catalog.html'">🎬 Каталог</button>
+    <button onclick="window.open('https://t.me/your_channel', '_blank')">✈️ Telegram</button>
+  </div>
+
+  <button class="logo-button" onclick="toggleMenu()">AniméStream</button>
+
+  <div class="watch-container" id="watchContent">
+    <!-- Сюда подставится содержимое через JS -->
+  </div>
+  
+<script src="player.js"></script>
+
+  <script>
+    function toggleMenu() {
+      const dropdown = document.getElementById('dropdown-menu');
+      const overlay = document.getElementById('overlay');
+      dropdown.classList.toggle('show');
+      overlay.classList.toggle('show');
+      overlay.onclick = () => {
+        dropdown.classList.remove('show');
+        overlay.classList.remove('show');
+      };
+    }
+
+    const animeData = {
+      "jujutsu-kaisen": {
+        title: "Jujutsu Kaisen",
+        description: "Юдзи Итадори борется с проклятиями в мире магии и чудовищ.",
+        video: "https://www.youtube.com/embed/PKHQuQF1S8k"
+      },
+      "death-note": {
+        title: "Death Note",
+        description: "Лайт Ягами получает тетрадь смерти и становится богом нового мира.",
+        video: "https://youtu.be/OHIxz3aPFiU?si=Vzc19Q59249UL_j7"
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const watchContent = document.getElementById("watchContent");
+
+    if (animeData[id]) {
+      const { title, description, video } = animeData[id];
+      watchContent.innerHTML = `
+        <h1 class="watch-title">${title}</h1>
+        <p class="watch-description">${description}</p>
+        <div class="video-wrapper">
+          <iframe src="${video}" allowfullscreen></iframe>
+        </div>
+      `;
+    } else {
+      watchContent.innerHTML = `<p style="text-align:center;">Аниме не найдено.</p>`;
+    }
+  </script>
+
+</body>
+</html>

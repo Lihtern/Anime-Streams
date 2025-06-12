@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AniméStream — Каталог</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    
+    :root {
+      --bg: #1a1a1a;
+      --card: #2a2a2a;
+      --accent: #808080;
+      --highlight: #a0a0a0;
+      --text: #fff;
+      --text-secondary: #aaa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background-color: #111;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1002;
+    }
+
+    .logo-button {
+      background-color: transparent;
+      border: none;
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      /* Анимированный градиент для текста */
+      background: linear-gradient(45deg, #b0b0b0, #e0e0e0, #909090, #c0c0c0);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: logoGradient 4s ease infinite;
+    }
+
+    @keyframes logoGradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .logo-button:hover {
+      background-color: rgba(128, 128, 128, 0.1);
+    }
+
+    .logo-button:active {
+      transform: scale(0.95);
+    }
+
+    .logo-button::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(to right, #b0b0b0, #e0e0e0, #909090);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-button:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      background-color: #333;
+      border-radius: 20px;
+      padding: 8px 15px;
+      width: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .search-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #606060, #a0a0a0, #606060);
+      background-size: 200% 200%;
+      z-index: -1;
+      border-radius: 22px;
+      opacity: 0;
+      transition: opacity 0.5s, background-position 0.5s;
+    }
+
+    .search-container:hover::before {
+      opacity: 1;
+      animation: gradientGlow 2s linear infinite;
+    }
+
+    @keyframes gradientGlow {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .search-input {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      width: 100%;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: #aaa;
+    }
+
+    .search-icon {
+      color: #aaa;
+      margin-right: 8px;
+    }
+
+    .dropdown {
+      position: fixed;
+      top: 80px;
+      left: 0;
+      width: 260px;
+      height: calc(100vh - 80px);
+      background-color: #222;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 1001;
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+      overflow-y: auto;
+    }
+
+    .dropdown.show {
+      transform: translateX(0);
+    }
+
+    .dropdown button {
+      background-color: #333;
+      border: none;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dropdown button::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #606060, #a0a0a0, #606060);
+      background-size: 200% 200%;
+      z-index: -1;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .dropdown button:hover::before {
+      opacity: 0.5;
+      animation: gradientGlow 2s linear infinite;
+    }
+
+    .dropdown button:hover {
+      background-color: #444;
+      transform: translateY(-2px);
+    }
+
+    .dropdown .highlight {
+      background-color: var(--highlight);
+    }
+
+    .main-content {
+      margin-top: 80px;
+      transition: transform 0.4s ease;
+      padding: 20px 40px;
+    }
+
+    .main-content.shifted {
+      transform: translateX(260px);
+    }
+
+    .hero {
+      position: relative;
+      height: 180px;
+      background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3)), 
+                  url('https://i.pinimg.com/originals/9f/6d/9e/9f6d9e0b8c8e8e8e8e8e8e8e8e8e8e8e.jpg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      max-width: 100%;
+    }
+
+    .hero h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+      color: #fff;
+    }
+
+    .hero p {
+      max-width: 60%;
+      color: var(--text-secondary);
+      margin-bottom: 15px;
+      font-size: 14px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .hero button {
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 13px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      /* Градиентный фон для основной кнопки */
+      background: linear-gradient(45deg, #505050, #808080, #a0a0a0);
+      background-size: 200% 200%;
+    }
+
+    .hero button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #606060, #909090, #c0c0c0);
+      background-size: 200% 200%;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .hero button:hover::before {
+      opacity: 1;
+      animation: gradientGlow 2s linear infinite;
+    }
+
+    .hero button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .hero button.secondary {
+      background-color: #333;
+    }
+
+    .hero button.secondary::before {
+      background: linear-gradient(45deg, #505050, #707070, #909090);
+    }
+
+    .hero button.secondary:hover {
+      background-color: #444;
+    }
+
+    .catalog {
+      margin-top: 20px;
+    }
+
+    .catalog h2 {
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    .anime-row {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: visible; /* Добавлено */
+      gap: 15px;
+      padding-bottom: 10px;
+      padding-top: 10px; /* Добавлено немного места сверху */
+    }
+
+
+    .anime-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      border-radius: 12px;
+      transition: filter 0.4s ease;
+    }
+    .anime-card {
+      position: relative;
+      width: 160px;
+      min-width: 160px;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: var(--card);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .anime-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+
+    .anime-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.8);
+      pointer-events: none;
+      border-radius: 12px;
+      z-index: 2;
+    }
+
+    .anime-card:hover .card-overlay {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+
+    .anime-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .anime-card:hover img {
+      filter: blur(4px);
+    }
+
+    .card-text {
+      text-align: center;
+      padding: 10px;
+      animation: fadeInUp 0.4s ease forwards;
+    }
+
+    .card-text h3 {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .card-text p {
+      font-size: 12px;
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+
+    .rating-badge {
+      background: #606060;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(10px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="overlay" id="overlay"></div>
+  <div class="dropdown" id="dropdown-menu">
+    <button onclick="location.href='login.html'">🔑 Вход</button>
+    <button onclick="location.href='register.html'">📝 Регистрация</button>
+    <button class="highlight" onclick="location.href='subscribe.html'">⭐ Подписка</button>
+    <button onclick="window.open('https://t.me/your_channel', '_blank')">✈️ Telegram</button>
+  </div>
+  
+  <header>
+    <button class="logo-button" onclick="toggleMenu(this)">AniméStream</button>
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" placeholder="Поиск аниме...">
+    </div>
+  </header>
+
+  <div class="main-content" id="main-content">
+    <section class="hero">
+      <h1>Лицейства</h1>
+      <p>По традиции обобщённости. Смотрите объёмом нашу задачу.</p>
+      <div class="hero-buttons">
+        <button>Смотреть</button>
+        <button class="secondary">Добавить в список</button>
+      </div>
+      
+    </section>
+<section class="catalog">
+  <h2>Популярное аниме</h2>
+
+  <!-- Группа 1 -->
+  <div class="anime-row">
+  <div class="anime-row">
+    <!-- карточки 1–10 -->
+    <!-- 1 -->
+    <div class="anime-card" data-id="jujutsu-kaisen">
+  <img src="https://upload.wikimedia.org/wikipedia/uk/2/26/Jujutsu_Kaisen_volume1_cover.jpg" alt="Jujutsu Kaisen">
+  <div class="card-overlay">
+    <div class="card-text">
+      <h3>Jujutsu Kaisen</h3>
+      <p>Магическая битва с проклятиями</p>
+      <span class="rating-badge">★ 8.7</span>
+    </div>
+  </div>
+</div>
+
+    <!-- 2 -->
+    <div class="anime-card" data-id="attack-on-titan">
+      <img src="https://upload.wikimedia.org/wikipedia/uk/2/22/%D0%9D%D0%B0_%D0%B1%D1%96%D0%B9_%D0%BF%D1%80%D0%BE%D1%82%D0%B8_%D1%82%D0%B8%D1%82%D0%B0%D0%BD%D1%96%D0%B2.jpg" alt="Attack on Titan">
+      <div class="card-overlay">
+        <div class="card-text">
+          <h3>Attack on Titan</h3>
+          <p>Битва за выживание человечества</p>
+          <span class="rating-badge">★ 9.0</span>
+        </div>
+      </div>
+    </div>
+    <!-- 3 -->
+    <div class="anime-card" data-id="death-note">
+      <img src="https://upload.wikimedia.org/wikipedia/ru/a/a9/Death_Note_Manga_Cover_Russian.jpg" alt="Death Note">
+      <div class="card-overlay">
+        <div class="card-text">
+          <h3>Death Note</h3>
+          <p>Тетрадь смерти в руках школьника</p>
+          <span class="rating-badge">★ 9.1</span>
+        </div>
+      </div>
+    </div>
+    <!-- 4 -->
+    <div class="anime-card" data-id="one-punch-Man">
+      <img src="https://upload.wikimedia.org/wikipedia/ru/c/c3/OnePunchMan_manga_cover.png" alt="One Punch Man">
+      <div class="card-overlay">
+        <div class="card-text">
+          <h3>One Punch Man</h3>
+          <p>Герой, побеждающий с одного удара</p>
+          <span class="rating-badge">★ 8.8</span>
+        </div>
+      </div>
+    </div>
+    <!-- 5 -->
+    <div class="anime-card" data-id="stains-gate">
+      <img src="https://shikimori.one/uploads/poster/animes/9253/main_2x-45f26288ccbf2078d6df4f38e81e01a7.webp" alt="Steins;Gate">
+      <div class="card-overlay">
+        <div class="card-text">
+          <h3>Steins;Gate</h3>
+          <p>Путешествия во времени и судьба</p>
+          <span class="rating-badge">★ 9.2</span>
+        </div>
+      </div>
+    </div>
+    <!-- 6 -->
+    <div class="anime-card" data-id="fullmetal-alchemist-brotherhood">
+      <img src="https://upload.wikimedia.org/wikipedia/en/7/7e/Fullmetal_Alchemist_Brotherhood_key_visual.png" alt="Fullmetal Alchemist: Brotherhood">
+      <div class="card-overlay">
+        <div class="card-text">
+          <h3>Fullmetal Alchemist</h3>
+          <p>Алхимия и братская сила</p>
+          <span class="rating-badge">★ 9.3</span>
+        </div>
+      </div>
+    </div>
+</section>
+
+  </div>
+
+  <script>
+    function toggleMenu(btn) {
+      const dropdown = document.getElementById('dropdown-menu');
+      const overlay = document.getElementById('overlay');
+      const mainContent = document.getElementById('main-content');
+      
+      dropdown.classList.toggle('show');
+      overlay.classList.toggle('show');
+      mainContent.classList.toggle('shifted');
+      
+      // Закрытие меню при клике на оверлей
+      overlay.onclick = function() {
+        dropdown.classList.remove('show');
+        overlay.classList.remove('show');
+        mainContent.classList.remove('shifted');
+      };
+    }
+  </script>
+  <!--------------------------------------------------------------------------->
+  <script>
+  document.querySelectorAll('.anime-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const animeId = card.getAttribute('data-id');
+      if (animeId) {
+        window.location.href = `watch.html?id=${encodeURIComponent(animeId)}`;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
