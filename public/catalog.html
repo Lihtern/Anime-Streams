@@ -527,21 +527,45 @@
   </style>
 </head>
 <body>
+
   <div class="overlay" id="overlay"></div>
   <div class="dropdown" id="dropdown-menu">
-    <button onclick="location.href='login.html'">🔑 Вход</button>
-    <button onclick="location.href='register.html'">📝 Регистрация</button>
+    <button class="login-btn" onclick="location.href='login.html'">🔑 Вход</button>
+    <button class="register-btn" onclick="location.href='register.html'">📝 Регистрация</button>
     <button class="highlight" onclick="location.href='subscribe.html'">⭐ Подписка</button>
     <button onclick="window.open('https://t.me/your_channel', '_blank')">✈️ Telegram</button>
   </div>
+
+  <script>
+    fetch('/check-session')
+      .then(res => res.json())
+      .then(data => {
+        if (data.loggedIn) {
+          document.querySelectorAll('.login-btn').forEach(el => el.style.display = 'none');
+          document.querySelectorAll('.register-btn').forEach(el => el.style.display = 'none');
+          document.querySelectorAll('.avatar').forEach(el => el.style.display = 'inline-block');
+        } else {
+          document.querySelectorAll('.login-btn').forEach(el => el.style.display = 'inline-block');
+          document.querySelectorAll('.register-btn').forEach(el => el.style.display = 'inline-block');
+          document.querySelectorAll('.avatar').forEach(el => el.style.display = 'none');
+        }
+      })
+      .catch(err => console.error("Ошибка запроса /check-session:", err));
+  </script>
   
-  <header>
-    <button class="logo-button" onclick="toggleMenu(this)">AniméStream</button>
+ <header>
+  <button class="logo-button" onclick="toggleMenu(this)">AniméStream</button>
+  <div style="display: flex; align-items: center; gap: 15px;">
     <div class="search-container">
       <span class="search-icon">🔍</span>
       <input type="text" class="search-input" placeholder="Поиск аниме...">
     </div>
-  </header>
+    <a href="profile.html" class="avatar" style="display:none;">
+      <img src="/img/default-avatar.jpg" alt="Avatar" style="width:40px; height:40px; border-radius:50%;">
+    </a>
+  </div>
+</header>
+
 
   <div class="main-content" id="main-content">
     <section class="hero">
@@ -636,7 +660,7 @@
 </section>
 
   </div>
-
+ <!--------------------------------------------------------------------------->
   <script>
     function toggleMenu(btn) {
       const dropdown = document.getElementById('dropdown-menu');
@@ -668,6 +692,41 @@
     });
   });
 </script>
+ <!--------------------------------------------------------------------------->
+<script>
+  const searchInput = document.querySelector('.search-input');
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    const cards = document.querySelectorAll('.anime-card');
+
+    cards.forEach(card => {
+      const title = card.querySelector('.card-text h3')?.textContent.toLowerCase() || '';
+      const visible = title.includes(query);
+      card.style.display = visible ? 'block' : 'none';
+    });
+  });
+</script>
+ <!--------------------------------------------------------------------------->
+<script>
+    console.log("🔍 Запуск проверки сессии...");
+    fetch('/check-session')
+      .then(res => res.json())
+      .then(data => {
+        console.log("✅ Ответ сервера:", data);
+        if (data.loggedIn) {
+          console.log("🟢 Пользователь авторизован, обновляем навигацию");
+          document.getElementById('login-link').style.display = 'none';
+          document.getElementById('register-link').style.display = 'none';
+          document.getElementById('profile-link').style.display = 'inline-block';
+          document.getElementById('logout-link').style.display = 'inline-block';
+        } else {
+          console.log("🔴 Пользователь не авторизован");
+        }
+      })
+      .catch(error => console.error("❌ Ошибка запроса /check-session:", error));
+  </script>
+
 
 
 </body>
