@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Профиль — AnimeStream</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #1a1a1a;
+      --card: #2a2a2a;
+      --accent: #808080;
+      --highlight: #a0a0a0;
+      --text: #fff;
+      --text-secondary: #aaa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* Background slideshow */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .background img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(8px) brightness(0.5);
+      opacity: 0;
+      animation: fadeSlide 60s infinite;
+    }
+
+    .background img:nth-child(1) { animation-delay: 0s; }
+    .background img:nth-child(2) { animation-delay: 6s; }
+    .background img:nth-child(3) { animation-delay: 12s; }
+    .background img:nth-child(4) { animation-delay: 18s; }
+    .background img:nth-child(5) { animation-delay: 24s; }
+    .background img:nth-child(6) { animation-delay: 30s; }
+    .background img:nth-child(7) { animation-delay: 36s; }
+    .background img:nth-child(8) { animation-delay: 42s; }
+    .background img:nth-child(9) { animation-delay: 48s; }
+    .background img:nth-child(10){ animation-delay: 54s; }
+
+    @keyframes fadeSlide {
+      0%, 100% { opacity: 0; }
+      10%, 20% { opacity: 1; }
+      30%, 100% { opacity: 0; }
+    }
+
+    /* Header styles */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background-color: rgba(17, 17, 17, 0.8);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1002;
+      backdrop-filter: blur(8px);
+    }
+
+    .logo-button {
+      background-color: transparent;
+      border: none;
+      font-size: 22px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(45deg, #b0b0b0, #e0e0e0, #909090, #c0c0c0);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: logoGradient 4s ease infinite;
+    }
+
+    @keyframes logoGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .logo-button:hover {
+      background-color: rgba(128, 128, 128, 0.1);
+    }
+
+    .logo-button:active {
+      transform: scale(0.95);
+    }
+
+    .logo-button::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(to right, #b0b0b0, #e0e0e0, #909090);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-button:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      background-color: rgba(51, 51, 51, 0.8);
+      border-radius: 20px;
+      padding: 8px 15px;
+      width: 300px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(4px);
+    }
+
+    .search-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #606060, #a0a0a0, #606060);
+      background-size: 200% 200%;
+      z-index: -1;
+      border-radius: 22px;
+      opacity: 0;
+      transition: opacity 0.5s, background-position 0.5s;
+    }
+
+    .search-container:hover::before {
+      opacity: 1;
+      animation: gradientGlow 2s linear infinite;
+    }
+
+    @keyframes gradientGlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .search-input {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      width: 100%;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: #aaa;
+    }
+
+    .search-icon {
+      color: #aaa;
+      margin-right: 8px;
+    }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .subscribe-btn {
+      background: linear-gradient(45deg, #ff6b6b, #ffa3a3);
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .subscribe-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    }
+
+    .avatar-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--highlight);
+      cursor: pointer;
+    }
+
+    .avatar-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Dropdown menu */
+    .dropdown {
+      position: fixed;
+      top: 80px;
+      left: 0;
+      width: 260px;
+      height: calc(100vh - 80px);
+      background-color: #222;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 1001;
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+      overflow-y: auto;
+    }
+
+    .dropdown.show {
+      transform: translateX(0);
+    }
+
+    .dropdown button {
+      background-color: #333;
+      border: none;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dropdown button::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #606060, #a0a0a0, #606060);
+      background-size: 200% 200%;
+      z-index: -1;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .dropdown button:hover::before {
+      opacity: 0.5;
+      animation: gradientGlow 2s linear infinite;
+    }
+
+    .dropdown button:hover {
+      background-color: #444;
+      transform: translateY(-2px);
+    }
+
+    .dropdown .highlight {
+      background-color: var(--highlight);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Profile content */
+    .profile-content {
+      position: relative;
+      z-index: 1;
+      margin-top: 80px;
+      padding: 30px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      background: rgba(17, 17, 17, 0.8);
+      backdrop-filter: blur(8px);
+    }
+
+    .profile-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .avatar-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--highlight);
+    }
+
+    .avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-info h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+      color: var(--highlight);
+    }
+
+    .user-info p {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    /* Profile cards */
+    .profile-card {
+      background-color: rgba(42, 42, 42, 0.8);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .profile-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .profile-card h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: var(--highlight);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-card h2::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Recently watched */
+    .recently-watched {
+      grid-column: 1 / -1;
+    }
+
+    .anime-list {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .anime-item {
+      min-width: 160px;
+      background: rgba(51, 51, 51, 0.8);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+
+    .anime-item:hover {
+      transform: scale(1.03);
+    }
+
+    .anime-item img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .anime-info {
+      padding: 10px;
+    }
+
+    .anime-info h3 {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .anime-info p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Stats card */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-3px);
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--highlight);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Friends card */
+    .friends-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .friend-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      transition: transform 0.3s;
+    }
+
+    .friend-item:hover {
+      transform: scale(1.05);
+    }
+
+    .friend-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--accent);
+    }
+
+    .friend-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .friend-name {
+      font-size: 12px;
+      text-align: center;
+    }
+
+    /* Achievements card */
+    .achievements-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .achievement-item {
+      width: 60px;
+      height: 60px;
+      background: rgba(51, 51, 51, 0.8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.3s;
+    }
+
+    .achievement-item:hover {
+      transform: scale(1.1);
+    }
+
+    .achievement-item::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 10px;
+      background: linear-gradient(45deg, #ff6b6b, #ffa3a3);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .achievement-item:hover::after {
+      opacity: 1;
+    }
+
+    .achievement-item.locked {
+      filter: grayscale(1);
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .profile-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .header-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .search-container {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <img src="https://img.freepik.com/free-photo/digital-art-with-city-landscape-architecture_23-2151065702.jpg" alt="bg1">
+    <img src="https://wallpapercat.com/w/full/d/2/d/2127410-2048x1365-desktop-hd-haunted-forest-wallpaper.jpg" alt="bg2">
+    <img src="https://i.pinimg.com/736x/d9/5a/ed/d95aed10b9e7cd5ae58e01db19883552.jpg" alt="bg3">
+    <img src="https://images.wallpapersden.com/image/download/black-and-white-snow-winter-night_bGpuZW6UmZqaraWkpJRmbmdlrWZnamg.jpg" alt="bg4">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0d-Y-FqZE9JCNI5514NFgSbOeGef85HPkX-BlPBSUxSB0C8fag_kwnJDel--iYY0Auy8" alt="bg5">
+    <img src="https://wallpaper.dog/large/17061716.jpg" alt="bg6">
+    <img src="https://wallpaper.dog/large/17061733.jpg" alt="bg7">
+    <img src="https://wallpaper.dog/large/10847083.jpg" alt="bg8">
+    <img src="https://e1.pxfuel.com/desktop-wallpaper/183/125/desktop-wallpaper-black-moon-17-mb-dark-forest-with-moon.jpg" alt="bg9">
+    <img src="https://wallpaper.dog/large/17061770.jpg" alt="bg10">
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="dropdown" id="dropdown-menu">
+    <button class="login-btn" onclick="location.href='login.html'">🔑 Вход</button>
+    <button class="register-btn" onclick="location.href='register.html'">📝 Регистрация</button>
+    <button class="highlight" onclick="location.href='subscribe.html'">⭐ Подписка</button>
+    <button onclick="window.open('https://t.me/your_channel', '_blank')">✈️ Telegram</button>
+  </div>
+
+  <header>
+    <button class="logo-button" onclick="toggleMenu()">AnimeStream</button>
+    <div class="header-buttons">
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" placeholder="Поиск аниме...">
+      </div>
+      <button class="subscribe-btn">Подписка</button>
+      <div class="avatar-btn" onclick="location.href='profile.html'">
+        <img src="https://via.placeholder.com/100" alt="Аватар">
+      </div>
+    </div>
+  </header>
+
+  <div class="profile-content">
+    <div class="profile-header">
+      <div class="avatar-large">
+        <img src="https://via.placeholder.com/120" alt="Аватар">
+      </div>
+      <div class="user-info">
+        <h1>Lihtern</h1>
+        <p>Фанат аниме с 2015 года. Люблю экшен и фэнтези.</p>
+      </div>
+    </div>
+
+    <div class="profile-card recently-watched">
+      <h2>Недавно просмотренные</h2>
+      <div class="anime-list">
+        <div class="anime-item">
+          <img src="https://static.wikia.nocookie.net/onepiece/images/7/7a/Episode_850.png" alt="One Piece">
+          <div class="anime-info">
+            <h3>One Piece</h3>
+            <p>Эпизод 850</p>
+          </div>
+        </div>
+        <div class="anime-item">
+          <img src="https://upload.wikimedia.org/wikipedia/uk/2/26/Jujutsu_Kaisen_volume1_cover.jpg" alt="Jujutsu Kaisen">
+          <div class="anime-info">
+            <h3>Jujutsu Kaisen</h3>
+            <p>Эпизод 12</p>
+          </div>
+        </div>
+        <div class="anime-item">
+          <img src="https://upload.wikimedia.org/wikipedia/uk/2/22/%D0%9D%D0%B0_%D0%B1%D1%96%D0%B9_%D0%BF%D1%80%D0%BE%D1%82%D0%B8_%D1%82%D0%B8%D1%82%D0%B0%D0%BD%D1%96%D0%B2.jpg" alt="Attack on Titan">
+          <div class="anime-info">
+            <h3>Attack on Titan</h3>
+            <p>Эпизод 45</p>
+          </div>
+        </div>
+        <div class="anime-item">
+          <img src="https://upload.wikimedia.org/wikipedia/ru/a/a9/Death_Note_Manga_Cover_Russian.jpg" alt="Death Note">
+          <div class="anime-info">
+            <h3>Death Note</h3>
+            <p>Эпизод 8</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <h2>Статистика</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">1.3 ч</div>
+          <div class="stat-label">Просмотрено</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">4</div>
+          <div class="stat-label">Серии</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">0 ч</div>
+          <div class="stat-label">За неделю</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">2</div>
+          <div class="stat-label">Аниме</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <h2>Друзья</h2>
+      <div class="friends-grid">
+        <div class="friend-item">
+          <div class="friend-avatar">
+            <img src="https://via.placeholder.com/50" alt="Друг 1">
+          </div>
+          <div class="friend-name">User123</div>
+        </div>
+        <div class="friend-item">
+          <div class="friend-avatar">
+            <img src="https://via.placeholder.com/50" alt="Друг 2">
+          </div>
+          <div class="friend-name">AnimeFan</div>
+        </div>
+        <div class="friend-item">
+          <div class="friend-avatar">
+            <img src="https://via.placeholder.com/50" alt="Друг 3">
+          </div>
+          <div class="friend-name">OtakuGirl</div>
+        </div>
+        <div class="friend-item">
+          <div class="friend-avatar">
+            <img src="https://via.placeholder.com/50" alt="Друг 4">
+          </div>
+          <div class="friend-name">WeebMaster</div>
+        </div>
+        <div class="friend-item">
+          <div class="friend-avatar">
+            <img src="https://via.placeholder.com/50" alt="Друг 5">
+          </div>
+          <div class="friend-name">KawaiiDesu</div>
+        </div>
+        <div class="friend-item">
+          <div class="friend-avatar">
+            <img src="https://via.placeholder.com/50" alt="Друг 6">
+          </div>
+          <div class="friend-name">Senpai</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <h2>Достижения</h2>
+      <div class="achievements-list">
+        <div class="achievement-item">
+          🏆
+        </div>
+        <div class="achievement-item">
+          📺
+        </div>
+        <div class="achievement-item">
+          ⭐
+        </div>
+        <div class="achievement-item locked">
+          🔒
+        </div>
+        <div class="achievement-item locked">
+          🔒
+        </div>
+        <div class="achievement-item locked">
+          🔒
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const dropdown = document.getElementById('dropdown-menu');
+      const overlay = document.getElementById('overlay');
+      
+      dropdown.classList.toggle('show');
+      overlay.classList.toggle('show');
+      
+      overlay.onclick = function() {
+        dropdown.classList.remove('show');
+        overlay.classList.remove('show');
+      };
+    }
+
+    // Check session status
+    fetch('/check-session')
+      .then(res => res.json())
+      .then(data => {
+        if (data.loggedIn) {
+          document.querySelectorAll('.login-btn').forEach(el => el.style.display = 'none');
+          document.querySelectorAll('.register-btn').forEach(el => el.style.display = 'none');
+        } else {
+          document.querySelectorAll('.login-btn').forEach(el => el.style.display = 'block');
+          document.querySelectorAll('.register-btn').forEach(el => el.style.display = 'block');
+        }
+      })
+      .catch(err => console.error("Ошибка запроса /check-session:", err));
+  </script>
+</body>
+</html>
