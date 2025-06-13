@@ -2,6 +2,17 @@ const express = require('express');
 const pool = require('../db');
 const router = express.Router();
 
+router.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Ошибка при выходе:', err);
+      return res.status(500).send('Ошибка при выходе');
+    }
+    res.redirect('/login.html');
+  });
+});
+
+
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   try {
