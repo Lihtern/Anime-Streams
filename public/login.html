@@ -231,12 +231,16 @@
     <img src="https://wallpaper.dog/large/17061770.jpg" alt="bg10">
   </div>
 
-  <div class="overlay" id="overlay"></div>
+   <div class="overlay" id="overlay"></div>
   <div class="dropdown" id="dropdown-menu">
-    <button onclick="location.href='register.html'">📝 Регистрация</button>
-    <button onclick="location.href='subscribe.html'">⭐ Подписка</button>
-    <button onclick="location.href='catalog.html'">🎬 Каталог</button>
+    <button id="login-link" onclick="location.href='login.html'">🔑 Вход</button>
+    <button id="register-link" onclick="location.href='register.html'">📝 Регистрация</button>
+    <button class="highlight" onclick="location.href='subscribe.html'">⭐ Подписка</button>
     <button onclick="window.open('https://t.me/your_channel', '_blank')">✈️ Telegram</button>
+    <button id="profile-link" style="display:none;" onclick="location.href='profile.html'">👤 Профиль</button>
+    <button id="logout-link" style="display:none;" onclick="location.href='/logout'">🚪 Выйти</button>
+
+
   </div>
 
   <button class="logo-button" onclick="toggleMenu()">AniméStream</button>
@@ -266,6 +270,25 @@
     }
   </script>
 <form action="/login" method="POST">
+ <!--------------------------------------------------------------------------->
+<script>
+    console.log("🔍 Запуск проверки сессии...");
+    fetch('/check-session')
+      .then(res => res.json())
+      .then(data => {
+        console.log("✅ Ответ сервера:", data);
+        if (data.loggedIn) {
+          console.log("🟢 Пользователь авторизован, обновляем навигацию");
+          document.getElementById('login-link').style.display = 'none';
+          document.getElementById('register-link').style.display = 'none';
+          document.getElementById('profile-link').style.display = 'inline-block';
+          document.getElementById('logout-link').style.display = 'inline-block';
+        } else {
+          console.log("🔴 Пользователь не авторизован");
+        }
+      })
+      .catch(error => console.error("❌ Ошибка запроса /check-session:", error));
+  </script>
 
 </body>
 </html>
